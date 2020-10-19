@@ -1,0 +1,14 @@
+
+
+port = 8080
+host = "0.0.0.0"
+
+[openweathermap]
+api_key = "9de243494c0b295cca9337e1e96b00e2"
+
+[accuweather]
+api_key = "8DqAInu2zuwUn3wglZwCxZA1bzXgJs37"
+#api_key = "GOosTVfIGIc0DINDZX43unqWG2LBAEig"
+
+[weatherbit]
+api_key = "26f02506c18a4711814f70c7483ae631"
