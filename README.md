@@ -61,4 +61,5 @@ without AccuWeather
 {"success":true,"error":null,"forecasts":[{"date":"2020-10-19","forecast":{"min":46.3,"max":55.4}},{"date":"2020-10-20","forecast":{"min":39.8,"max":46.9}},{"date":"2020-10-21","forecast":{"min":34.0,"max":40.1}},{"date":"2020-10-22","forecast":{"min":30.2,"max":33.7}},{"date":"2020-10-23","forecast":{"min":28.2,"max":34.1}}]}
 
 with AccuWeather
+
 {"success":true,"error":null,"forecasts":[{"date":"2020-10-19","forecast":{"min":40.3,"max":57.6}},{"date":"2020-10-20","forecast":{"min":36.0,"max":45.9}},{"date":"2020-10-21","forecast":{"min":31.5,"max":41.2}},{"date":"2020-10-22","forecast":{"min":28.1,"max":34.3}},{"date":"2020-10-23","forecast":{"min":24.9,"max":34.4}}]}
