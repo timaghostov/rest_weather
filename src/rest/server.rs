@@ -113,7 +113,7 @@ impl RestServer {
             let mut service = Service::new( conf );
 
             service.add_remote_service( Box::new( OpenWeatherMap::new( WeahterGetOWM ) ) );
-            service.add_remote_service( Box::new( AccuWeather::new( WeahterGetAW ) ) );
+            //service.add_remote_service( Box::new( AccuWeather::new( WeahterGetAW ) ) );
             service.add_remote_service( Box::new( WeatherBit::new( WeahterGetWB ) ) );
 
             let data = web::Data::new( service );
