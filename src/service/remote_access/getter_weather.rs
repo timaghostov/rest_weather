@@ -17,8 +17,8 @@ use super::WeatherFuture;
 
 pub trait GetterWeather {
     
-    fn daily_weather( &self, configuration: &Configuration<'_>, city: &str, day: NaiveDate ) -> WeatherFuture< Forecast<Fahrenheit> >;
+    fn daily_weather<'w>( &self, configuration: &'w Configuration<'w>, city: &'w str, day: NaiveDate ) -> WeatherFuture< 'w, Forecast<Fahrenheit> >;
 
-    fn weekly_weather( &self, configuration: &Configuration<'_>, city: &str ) -> WeatherFuture< Vec< Forecast<Fahrenheit> > >;
+    fn weekly_weather<'w>( &self, configuration: &'w Configuration<'w>, city: &'w str ) -> WeatherFuture< 'w, Vec< Forecast<Fahrenheit> > >;
 
 }

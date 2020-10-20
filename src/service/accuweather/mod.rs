@@ -1,6 +1,5 @@
 
 
-#![allow(unused_imports, dead_code)]
 
 
 mod impl_remote_access;
@@ -39,11 +38,11 @@ impl<T> AccuWeather<T> where T: RemoteAccess {
 
 impl<T> GetterWeather for AccuWeather<T> where T: RemoteAccess {
 
-    fn daily_weather( &self, configuration: &Configuration<'_>, city: &str, day: NaiveDate ) -> WeatherFuture< Forecast<Fahrenheit> > {
+    fn daily_weather<'w>( &self, configuration: &'w Configuration<'w>, city: &'w str, day: NaiveDate ) -> WeatherFuture< 'w, Forecast<Fahrenheit> > {
         self.raccess.daily_weather( configuration, city, day )
     }
 
-    fn weekly_weather( &self, configuration: &Configuration<'_>, city: &str ) -> WeatherFuture< Vec< Forecast<Fahrenheit> > > {
+    fn weekly_weather<'w>( &self, configuration: &'w Configuration<'w>, city: &'w str ) -> WeatherFuture< 'w, Vec< Forecast<Fahrenheit> > > {
         self.raccess.weekly_weather( configuration, city )
     }
 

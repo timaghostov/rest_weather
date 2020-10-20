@@ -73,7 +73,6 @@ impl Response {
         let mut forecast_opt = None;
 
         for forecast in &self.daily_forecasts {
-            // println!("accu weather daily forecast :: {:?} :: {:?}", target_day, forecast);
             if target_day == forecast.date.date() {
                 forecast_opt = Some( forecast.into() );
                 break;

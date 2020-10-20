@@ -1,5 +1,4 @@
 
-#![allow(unused_imports, unused_variables)]
 
 
 use std::error::Error;
@@ -24,11 +23,11 @@ pub struct WeahterGet;
 
 impl RemoteAccess for WeahterGet {
     
-    fn build_request_url_daily( configuration: &Configuration, city: &str, day: NaiveDate ) -> WeatherFuture< Cow<'static, str> > {
+    fn build_request_url_daily<'w>( configuration: &'w Configuration<'w>, city: &'w str, day: NaiveDate ) -> WeatherFuture< 'w, Cow<'w, str> > {
         UrlBuilder::new( configuration ).city( city ).daily( day )
     }
 
-    fn build_request_url_weekly( configuration: &Configuration, city: &str ) -> WeatherFuture< Cow<'static, str> > {
+    fn build_request_url_weekly<'w>( configuration: &'w Configuration<'w>, city: &'w str ) -> WeatherFuture< 'w, Cow<'w, str> > {
         UrlBuilder::new( configuration ).city( city ).weekly()
     }
 

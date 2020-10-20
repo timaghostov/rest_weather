@@ -61,7 +61,6 @@ impl Response {
         let mut forecast_opt = None;
 
         for forecast in &self.daily_forecasts {
-            // println!("weather bit daily forecast :: {:?} :: {:?}", target_day, forecast);
             if target_day == forecast.date {
                 forecast_opt = Some( forecast.into() );
                 break;

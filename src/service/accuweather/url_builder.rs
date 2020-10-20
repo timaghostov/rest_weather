@@ -1,6 +1,5 @@
 
 
-#![allow(unused_variables, dead_code)]
 
 
 use std::borrow::Cow;
@@ -31,24 +30,24 @@ const MAX_FORECAST_DAYS: i64 = 5;
 const WEEK_DAYS: u8 = 5;
 
 #[derive(Debug)]
-pub struct UrlBuilder<'a, 'w> {
-    web_service: Cow<'a, AccuWeather<'w>>,
-    city: Option<&'a str>
+pub struct UrlBuilder<'w> {
+    web_service: Cow<'w, AccuWeather<'w>>,
+    city: Option<Cow<'w, str>>
 }
 
-impl<'a, 'w> UrlBuilder<'a, 'w> {
+impl<'w> UrlBuilder<'w> {
     
-    pub fn new( configuration: &'w Configuration<'w> ) -> UrlBuilder<'a, 'w> {
+    pub fn new( configuration: &'w Configuration<'w> ) -> UrlBuilder<'w> {
         UrlBuilder {
             web_service: configuration.accuweather(),
             city: None
         }
     }
 
-    pub fn city( self, city: &'a str ) -> UrlBuilder<'a, 'w> {
+    pub fn city( self, city: &'w str ) -> UrlBuilder<'w> {
         UrlBuilder {
             web_service: self.web_service,
-            city: Some( city )
+            city: Some( Cow::Borrowed( city ) )
         }
     }
 
@@ -72,12 +71,12 @@ impl<'a, 'w> UrlBuilder<'a, 'w> {
         }
     }
 
-    fn fut_location_key( &self ) -> WeatherFuture< Cow<'static, str> > {
-        let fut = match self.city {
+    fn fut_location_key( &self ) -> WeatherFuture< 'w, Cow<'w, str> > {
+        let fut = match self.city.to_owned() {
             Some( city ) => {
                 let url = format!("{}q={}&apikey={}", LOCATION_BASE_URL, city, self.web_service.api_key());
                 // println!("fut_location_key :: {:?}", url);
-                let fut = get_response( &url )
+                let fut = get_response( Cow::Owned( url ) )
                             .then( | value_res | {                                
                                 match value_res.and_then( | value | Self::get_location_key( value ) ) {
                                     Ok( value ) => {
@@ -93,7 +92,7 @@ impl<'a, 'w> UrlBuilder<'a, 'w> {
         FutureExt::boxed( fut )
     }
 
-    fn forecast( &self, day: NaiveDate, count_day: u8 ) -> WeatherFuture< Cow<'static, str> > {
+    fn forecast( &self, day: NaiveDate, count_day: u8 ) -> WeatherFuture< 'w, Cow<'w, str> > {
         let api_key: String = self.web_service.api_key().into_owned();
         let fut = self.fut_location_key()
                     .then( move | location_key_res | {
@@ -139,11 +138,11 @@ impl<'a, 'w> UrlBuilder<'a, 'w> {
         FutureExt::boxed( fut )
     }
 
-    pub fn daily( &self, day: NaiveDate ) -> WeatherFuture< Cow<'static, str> > {
+    pub fn daily( &self, day: NaiveDate ) -> WeatherFuture< 'w, Cow<'w, str> > {
         self.forecast( day, 1 )
     }
 
-    pub fn weekly( &self ) -> WeatherFuture< Cow<'static, str> > {
+    pub fn weekly( &self ) -> WeatherFuture< 'w, Cow<'w, str> > {
         let local = Local::today();
         self.forecast( local.naive_local(), WEEK_DAYS )
     }

@@ -48,7 +48,6 @@ impl Response {
         let mut forecast_opt = None;
 
         for forecast in &self.daily_forecasts {
-            // println!("open weather map daily forecast :: {:?} :: {:?}", target_day, forecast);
             let forecast_date = NaiveDateTime::from_timestamp( forecast.date, 0 );
             if target_day == forecast_date.date() {
                 forecast_opt = Some( forecast.into() );

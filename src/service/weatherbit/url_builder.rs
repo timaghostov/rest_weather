@@ -1,6 +1,5 @@
 
 
-#![allow(unused_variables, dead_code)]
 
 
 use std::borrow::Cow;
@@ -22,28 +21,28 @@ const MAX_FORECAST_DAYS: i64 = 16;
 const WEEK_DAYS: u8 = 5;
 
 #[derive(Debug)]
-pub struct UrlBuilder<'a, 'w> {
-    web_service: Cow<'a, WeatherBit<'w>>,
-    city: Option<&'a str>
+pub struct UrlBuilder<'w> {
+    web_service: Cow<'w, WeatherBit<'w>>,
+    city: Option<&'w str>
 }
 
-impl<'a, 'w> UrlBuilder<'a, 'w> {
+impl<'w> UrlBuilder<'w> {
     
-    pub fn new( configuration: &'w Configuration<'w> ) -> UrlBuilder<'a, 'w> {
+    pub fn new( configuration: &'w Configuration<'w> ) -> UrlBuilder<'w> {
         UrlBuilder {
             web_service: configuration.weatherbit(),
             city: None
         }
     }
 
-    pub fn city( self, city: &'a str ) -> UrlBuilder<'a, 'w> {
+    pub fn city( self, city: &'w str ) -> UrlBuilder<'w> {
         UrlBuilder {
             web_service: self.web_service,
             city: Some( city )
         }
     }
 
-    fn forecast( &self, day: NaiveDate, count_day: u8 ) -> WeatherFuture< Cow<'static, str> > {
+    fn forecast( &self, day: NaiveDate, count_day: u8 ) -> WeatherFuture< 'w, Cow<'w, str> > {
         let result = match self.city {
             Some(city) => {
                 let today = Local::today().naive_local();
@@ -74,11 +73,11 @@ impl<'a, 'w> UrlBuilder<'a, 'w> {
         FutureExt::boxed( fut )
     }
 
-    pub fn daily( &self, day: NaiveDate ) -> WeatherFuture< Cow<'static, str> > {
+    pub fn daily( &self, day: NaiveDate ) -> WeatherFuture< 'w, Cow<'w, str> > {
         self.forecast( day, 1 )
     }
 
-    pub fn weekly( &self ) -> WeatherFuture< Cow<'static, str> > {
+    pub fn weekly( &self ) -> WeatherFuture< 'w, Cow<'w, str> > {
         let local = Local::today();
         self.forecast( local.naive_local(), WEEK_DAYS )
     }

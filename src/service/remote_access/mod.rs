@@ -15,9 +15,10 @@ use chrono::{ NaiveDate, Datelike };
 use futures::future::{ BoxFuture, FutureExt, ok, err };
 use std::error::Error;
 use std::time::Duration;
+use std::borrow::Cow;
 
 
-pub type WeatherFuture<T> = BoxFuture< 'static, Result< T, RemoteError > >;
+pub type WeatherFuture<'w, T> = BoxFuture< 'w, Result< T, RemoteError > >;
 
 
 pub fn unix_time( date: NaiveDate ) -> i64 {
@@ -26,13 +27,14 @@ pub fn unix_time( date: NaiveDate ) -> i64 {
     (gregorian_day - UNIX_EPOCH_DAY) * 86_400
 }
 
-pub fn get_response( url: &str ) -> WeatherFuture<Value> {
+pub fn get_response<'w>( url: Cow<'w, str> ) -> WeatherFuture<'w, Value> {
     // println!("get_response url :: {:?}", url);
     let client_res = reqwest::Client::builder()
+                            // .timeout(Duration::from_secs(10))
                             .build();
     let fut = match client_res {
         Ok( client ) => {
-            let fut = client.get( url )
+            let fut = client.get( url.as_ref() )
                 .send()
                 .then( | response_res | {
                     // println!("response_res :: {:?}", response_res);

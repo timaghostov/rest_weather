@@ -1,6 +1,5 @@
 
 
-#![allow(unused_imports)]
 
 
 use std::error::Error;
@@ -23,15 +22,15 @@ use super::{ BadStatus, RemoteError, WeatherFuture, get_response };
 
 pub trait RemoteAccess: Sized {    
 
-    fn build_request_url_daily( configuration: &Configuration, city: &str, day: NaiveDate ) -> WeatherFuture< Cow<'static, str> >;
+    fn build_request_url_daily<'w>( configuration: &'w Configuration<'w>, city: &'w str, day: NaiveDate ) -> WeatherFuture< 'w, Cow<'w, str> >;
 
-    fn build_request_url_weekly( configuration: &Configuration, city: &str ) -> WeatherFuture< Cow<'static, str> >;
+    fn build_request_url_weekly<'w>( configuration: &'w Configuration<'w>, city: &'w str ) -> WeatherFuture< 'w, Cow<'w, str> >;
 
     fn parse_response_daily( value: Value, target_day: NaiveDate ) -> Result< Forecast<Fahrenheit>, RemoteError >;
 
     fn parse_response_weekly( value: Value ) -> Result< Vec< Forecast<Fahrenheit> >, RemoteError >;
 
-    fn daily_weather( &self, configuration: &Configuration<'_>, city: &str, day: NaiveDate ) -> WeatherFuture< Forecast<Fahrenheit> > {
+    fn daily_weather<'w>( &self, configuration: &'w Configuration<'w>, city: &'w str, day: NaiveDate ) -> WeatherFuture< 'w, Forecast<Fahrenheit> > {
         let fut = Self::build_request_url_daily( configuration, city, day )
             .then( move | url_res | {
                 let fut = match url_res {
@@ -59,7 +58,7 @@ pub trait RemoteAccess: Sized {
             FutureExt::boxed( fut )
     }
 
-    fn weekly_weather( &self, configuration: &Configuration<'_>, city: &str ) -> WeatherFuture< Vec< Forecast<Fahrenheit> > > {
+    fn weekly_weather<'w>( &self, configuration: &'w Configuration<'w>, city: &'w str ) -> WeatherFuture< 'w, Vec< Forecast<Fahrenheit> > > {
         let fut = Self::build_request_url_weekly( configuration, city )
             .then( | url_res | {
                 let fut = match url_res {
@@ -87,9 +86,9 @@ pub trait RemoteAccess: Sized {
             FutureExt::boxed( fut )
     }
 
-    fn execute_request<'a>( url: Cow<'a, str> ) -> WeatherFuture< Value > {
+    fn execute_request<'w>( url: Cow<'w, str> ) -> WeatherFuture< 'w, Value > {
         // println!("execute_request :: {:?}", url);        
-        get_response( url.as_ref() )
+        get_response( url )
     }
 
 }

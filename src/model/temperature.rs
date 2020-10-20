@@ -1,21 +1,14 @@
 
 
-#![allow(dead_code)]
 
-use serde::{ Serialize, Serializer };
+use serde::Serialize;
 
 
 use std::ops::{ Add, Div };
 
-fn round_serialize<S>(f: &f32, s: S) -> Result<S::Ok, S::Error> where S: Serializer, {
-    let scale = 1;
-    let multiplier = 10f32.powi(scale as i32) as f32;
-	let f = (f * multiplier).ceil() / multiplier;
-    s.serialize_f32( f )
-}
 
 #[derive( Debug, Clone, Copy, Serialize )]
-pub struct Fahrenheit( #[serde(serialize_with = "round_serialize")] f32);
+pub struct Fahrenheit(f32);
 
 impl Fahrenheit {
     
@@ -62,7 +55,7 @@ impl Div<f32> for Fahrenheit {
 }
 
 #[derive( Debug, Clone, Copy, Serialize )]
-pub struct Celsius( #[serde(serialize_with = "round_serialize")] f32);
+pub struct Celsius(f32);
 
 impl Celsius {
     
