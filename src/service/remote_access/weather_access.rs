@@ -2,22 +2,16 @@
 
 
 
-use std::error::Error;
-use std::pin::Pin;
 use std::borrow::Cow;
-use std::time::Duration;
 
 use chrono::NaiveDate;
-use serde_json::{ Value, from_str as json_from_str };
-use std::future::Future;
+use serde_json::{ Value };
 use futures::FutureExt;
-use futures::TryFutureExt;
 use futures::future::{ ok, err };
-use reqwest::{ ClientBuilder, Error as ReqwestError };
 
 use crate::service::configuration::Configuration;
 use crate::model::{ Fahrenheit, Forecast };
-use super::{ BadStatus, RemoteError, WeatherFuture, get_response };
+use super::{ RemoteError, WeatherFuture, get_response };
 
 
 pub trait RemoteAccess: Sized {    

@@ -20,7 +20,7 @@ impl<'de> Visitor<'de> for NaiveDateTimeVisitor {
     fn visit_str<E>(self, s: &str) -> Result<Self::Value, E> where E: Error, {
         match NaiveDateTime::parse_from_str(s, "%Y-%m-%dT%H:%M:%S%z") {
             Ok( dt ) => Ok( dt ),
-            Err( error ) => Err(Error::invalid_value(Unexpected::Str(s), &self)),
+            Err( _error ) => Err(Error::invalid_value(Unexpected::Str(s), &self)),
         }
     }
 }

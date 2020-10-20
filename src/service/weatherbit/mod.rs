@@ -8,10 +8,6 @@ mod parser;
 
 pub use impl_remote_access::WeahterGet;
 
-use std::future::Future;
-use futures::future::LocalBoxFuture;
-use std::error::Error;
-
 use parser::Parser;
 use url_builder::UrlBuilder;
 use crate::model::{ Fahrenheit, Forecast };

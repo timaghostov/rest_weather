@@ -3,7 +3,7 @@
 
 use std::fmt;
 use serde::{ Deserialize, Deserializer, de::{ Error, Visitor, Unexpected } };
-use chrono::{ NaiveDateTime, NaiveDate, Local };
+use chrono::{ NaiveDate };
 use crate::service::remote_access::RemoteError;
 use crate::model::{ Forecast, Fahrenheit };
 
@@ -20,7 +20,7 @@ impl<'de> Visitor<'de> for NaiveDateVisitor {
     fn visit_str<E>(self, s: &str) -> Result<Self::Value, E> where E: Error, {
         match NaiveDate::parse_from_str(s, "%Y-%m-%d") {
             Ok( dt ) => Ok( dt ),
-            Err( error ) => Err(Error::invalid_value(Unexpected::Str(s), &self)),
+            Err( _error ) => Err(Error::invalid_value(Unexpected::Str(s), &self)),
         }
     }
 }

@@ -20,7 +20,7 @@ pub struct App;
 impl App {
     
     pub async fn run() {
-        let configuration = Configuration::open("config/configuration.toml").unwrap();
+        let configuration = Configuration::open(CONF_PATH).unwrap();
         println!("configuration :: {:#?}", configuration);
 
         let mut service = Service::new( &configuration );

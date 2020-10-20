@@ -24,6 +24,10 @@ impl<'a> RestResponse<'a, Fahrenheit> {
             }
     }
 
+    pub fn is_success( &self ) -> bool {
+        self.success
+    }
+
 }
 
 impl<'a, T: Clone + From<Fahrenheit>> From<Result< Forecast<T>, MeasureError >> for RestResponse<'a, T> {

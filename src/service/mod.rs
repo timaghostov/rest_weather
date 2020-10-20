@@ -10,5 +10,5 @@ mod webservice;
 mod util;
 
 
-pub use configuration::Configuration;
+pub use configuration::{ Configuration, CONF_PATH };
 pub use webservice::Service;

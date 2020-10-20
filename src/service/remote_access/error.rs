@@ -4,34 +4,10 @@
 use std::error::Error;
 use std::fmt;
 
-use reqwest::{ StatusCode, Error as ReqwestError };
+use reqwest::{ Error as ReqwestError };
 use serde_json::Error as SerdeError;
 
 
-
-
-#[derive(Debug, PartialEq)]
-pub struct BadStatus {
-    status: StatusCode
-}
-
-impl BadStatus {
-    
-    pub fn new(status: StatusCode) -> Self {
-        Self {
-            status
-        }
-    }
-
-}
-
-impl fmt::Display for BadStatus {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "BadStatus ({})", self.status)
-    }
-}
-
-impl Error for BadStatus {}
 
 #[derive(Debug)]
 pub enum RemoteError {
@@ -39,7 +15,6 @@ pub enum RemoteError {
     BiggestDay                      ,
     SmallestDay                     ,
     UnknownResult                   ,
-    BadStatus( BadStatus )          ,
     ReqwestError( ReqwestError )    ,
     SerdeError( SerdeError )        ,
 }
@@ -74,13 +49,6 @@ impl RemoteError {
         }
     }
 
-    pub fn is_bad_status( &self ) -> bool {
-        match self {
-            RemoteError::BadStatus( _ ) => true,
-            _ => false,
-        }
-    }
-
     pub fn is_reqwest_error( &self ) -> bool {
         match self {
             RemoteError::ReqwestError( _ ) => true,
@@ -104,7 +72,6 @@ impl fmt::Display for RemoteError {
             RemoteError::BiggestDay => write!(f, "BiggestDay"),
             RemoteError::SmallestDay => write!(f, "SmallestDay"),
             RemoteError::UnknownResult => write!(f, "UnknownResult"),
-            RemoteError::BadStatus( value ) => write!(f, "BadStatus ({})", value),
             RemoteError::ReqwestError( value ) => write!(f, "ReqwestError ({})", value),
             RemoteError::SerdeError( value ) => write!(f, "SerdeError ({})", value),
         }
@@ -179,20 +146,6 @@ impl MeasureError {
         }
     }
 
-    pub fn has_bad_status( &self ) -> bool {
-        match self {
-            MeasureError::UnknownResult => false,
-            MeasureError::BadDateFormat => false,
-            MeasureError::RemoteError( errors ) => {
-                if errors.is_empty() {
-                    false
-                } else {
-                    errors.iter().any( | x | x.is_bad_status() )
-                }
-            },
-        }
-    }
-
     pub fn has_reqwest_error( &self ) -> bool {
         match self {
             MeasureError::UnknownResult => false,
@@ -245,8 +198,6 @@ impl fmt::Display for MeasureError {
                         write!(f, "Forecast result is unknown. Bad convert results. Check your data structures.")
                     } else if self.has_unknown_result() {
                         write!(f, "Forecast result is unknown. Unknown error.")
-                    } else if self.has_bad_status() {
-                        write!(f, "Forecast result is unknown. Bad statuses.")
                     } else {
                         write!(f, "Forecast result is unknown.")
                     }

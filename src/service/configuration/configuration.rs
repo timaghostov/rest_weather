@@ -13,7 +13,7 @@ pub use super::accuweather::AccuWeather;
 pub use super::weatherbit::WeatherBit;
 pub use super::error::ConfigurationError;
 
-
+pub const CONF_PATH: &str = "config/configuration.toml";
 
 #[derive( Deserialize, Debug, Clone )]
 pub struct Configuration<'a> {

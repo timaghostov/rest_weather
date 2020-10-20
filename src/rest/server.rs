@@ -4,14 +4,11 @@
 use std::process::exit;
 use std::io;
 
-use std::cell::Cell;
-use std::sync::{ Mutex, Arc };
-
 use actix_web::{ get, web, App, HttpServer, HttpResponse };
 use chrono::NaiveDate;
 use crate::model::{ Fahrenheit, Celsius };
 use crate::rest::RestResponse;
-use crate::service::Configuration;
+use crate::service::{ Configuration, CONF_PATH };
 use crate::service::Service;
 use crate::service::remote_access::MeasureError;
 use crate::service::openweathermap::{ OpenWeatherMap, WeahterGet as WeahterGetOWM };
@@ -19,12 +16,13 @@ use crate::service::accuweather::{ AccuWeather, WeahterGet as WeahterGetAW };
 use crate::service::weatherbit::{ WeatherBit, WeahterGet as WeahterGetWB };
 
 
+pub const DATE_FORMAT: &str = "%Y-%m-%d";
 
 #[derive(Debug)]
 pub struct RestServer;
 
 async fn forecast_daily<'a, T: Clone + From<Fahrenheit>>(service: &Service<'a>, city: &str, date: &str) -> RestResponse<'a, T> {
-    let date_res = NaiveDate::parse_from_str( &date, "%Y-%m-%d" );
+    let date_res = NaiveDate::parse_from_str( &date, DATE_FORMAT );
     match date_res {
         Ok( date ) => {
             service.forecast_daily::<T>( city, date ).await
@@ -45,7 +43,7 @@ async fn daily_fahrenheit(service: web::Data<Service<'_>>, web::Path(( city, dat
         Ok( response ) => {
             HttpResponse::Ok().body(response)
         },
-        Err( error ) => {
+        Err( _error ) => {
             HttpResponse::from( "Failed on response convert." )
         },
     }
@@ -59,7 +57,7 @@ async fn daily_celsius(service: web::Data<Service<'_>>, web::Path(( city, date )
         Ok( response ) => {
             HttpResponse::Ok().body(response)
         },
-        Err( error ) => {
+        Err( _error ) => {
             HttpResponse::from( "Failed on response convert." )
         },
     }
@@ -73,7 +71,7 @@ async fn weekly_fahrenheit(service: web::Data<Service<'_>>, web::Path( city ): w
         Ok( response ) => {
             HttpResponse::Ok().body(response)
         },
-        Err( error ) => {
+        Err( _error ) => {
             HttpResponse::from( "Failed on response convert." )
         },
     }
@@ -87,7 +85,7 @@ async fn weekly_celsius(service: web::Data<Service<'_>>, web::Path( city ): web:
         Ok( response ) => {
             HttpResponse::Ok().body(response)
         },
-        Err( error ) => {
+        Err( _error ) => {
             HttpResponse::from( "Failed on response convert." )
         },
     }
@@ -97,11 +95,10 @@ impl RestServer {
     
     pub async fn run() -> io::Result<()> {
         
-        let conf_path = "config/configuration.toml";
-        let configuration = match Configuration::open(conf_path) {
+        let configuration = match Configuration::open(CONF_PATH) {
             Ok(configuration) => configuration,
-            Err( error ) => {
-                println!("Error. Cannot read configuration file on {}", conf_path);
+            Err( _error ) => {
+                println!("Error. Cannot read configuration file on {}", CONF_PATH);
                 exit(0);
             },
         };
@@ -113,7 +110,7 @@ impl RestServer {
             let mut service = Service::new( conf );
 
             service.add_remote_service( Box::new( OpenWeatherMap::new( WeahterGetOWM ) ) );
-            // service.add_remote_service( Box::new( AccuWeather::new( WeahterGetAW ) ) );
+            service.add_remote_service( Box::new( AccuWeather::new( WeahterGetAW ) ) );
             service.add_remote_service( Box::new( WeatherBit::new( WeahterGetWB ) ) );
 
             let data = web::Data::new( service );

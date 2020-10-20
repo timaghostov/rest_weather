@@ -9,7 +9,6 @@ use toml::de::Error as TomlError;
 
 
 
-// #[derive( Debug, Deserialize )]
 #[derive( Debug )]
 pub enum ConfigurationError {
     IoError( IoError ),

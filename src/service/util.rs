@@ -13,7 +13,7 @@ pub fn average_daily( day: NaiveDate, forecasts: Vec< Result< Forecast<Fahrenhei
     let mut errors = vec![];
     let mut success_measurements = MeasureForecast::default();
 
-    for ( i, forecast_res ) in forecasts.into_iter().enumerate() {
+    for forecast_res in forecasts {
         match forecast_res {
             Ok( forecast ) => {
                 if day == *forecast.date() {
@@ -49,7 +49,7 @@ pub fn average_weekly( weekly_forecasts: Vec< Result< Vec< Forecast<Fahrenheit> 
         ( today.add( Duration::days( 4 ) ), 0, MeasureForecast::default() ),
     ];
 
-    for ( j, weekly_forecast_res ) in weekly_forecasts.into_iter().enumerate() {
+    for weekly_forecast_res in weekly_forecasts {
         match weekly_forecast_res {
             Ok( weekly_forecast ) => {
                 for ( i, forecast ) in weekly_forecast.iter().enumerate() {

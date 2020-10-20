@@ -1,10 +1,9 @@
 
 
 
-use std::borrow::Cow;
 use chrono::NaiveDate;
 
-use super::remote_access::{ GetterWeather, WeatherFuture, MeasureError };
+use super::remote_access::{ GetterWeather, WeatherFuture };
 use super::util::{ average_daily, average_weekly };
 use super::configuration::Configuration;
 use crate::model::{ Fahrenheit, Forecast };

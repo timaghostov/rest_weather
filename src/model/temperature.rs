@@ -10,14 +10,6 @@ use std::ops::{ Add, Div };
 #[derive( Debug, Clone, Copy, Serialize )]
 pub struct Fahrenheit(f32);
 
-impl Fahrenheit {
-    
-    pub fn new( value: f32 ) -> Self {
-        Self( value )
-    }
-
-}
-
 impl Default for Fahrenheit {
     
     fn default() -> Fahrenheit {
@@ -56,14 +48,6 @@ impl Div<f32> for Fahrenheit {
 
 #[derive( Debug, Clone, Copy, Serialize )]
 pub struct Celsius(f32);
-
-impl Celsius {
-    
-    pub fn new( value: f32 ) -> Self {
-        Self( value )
-    }
-
-}
 
 impl Default for Celsius {
     

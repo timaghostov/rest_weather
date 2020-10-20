@@ -6,13 +6,11 @@ use std::borrow::Cow;
 use std::ops::Add;
 
 use serde_json::Value;
-use chrono::{ NaiveDate, NaiveDateTime, Local, Duration, Datelike };
+use chrono::{ NaiveDate, Local, Duration };
 use futures::future::{ ok, err };
 use futures::FutureExt;
 
-use reqwest;
-
-use crate::service::remote_access::{ RemoteError, WeatherFuture, unix_time, get_response };
+use crate::service::remote_access::{ RemoteError, WeatherFuture, get_response };
 use crate::service::configuration::{
     Configuration,
     AccuWeather
@@ -26,7 +24,7 @@ const BASE_URL_TODAY: &str = "http://dataservice.accuweather.com/forecasts/v1/da
 const BASE_URL_ON_DAY: &str = "http://dataservice.accuweather.com/forecasts/v1/daily/5day/";
 //http://api.accuweather.com/forecasts/v1/daily/5day/349084?apikey={your key}
 const BASE_URL_ON_WEEK: &str = "http://dataservice.accuweather.com/forecasts/v1/daily/5day/";
-const MAX_FORECAST_DAYS: i64 = 5;
+pub const MAX_FORECAST_DAYS: i64 = 5;
 const WEEK_DAYS: u8 = 5;
 
 #[derive(Debug)]

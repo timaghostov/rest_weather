@@ -1,5 +1,4 @@
 
-#![allow(unused_variables, unused_imports, dead_code)]
 
 
 extern crate serde;
@@ -13,7 +12,9 @@ extern crate reqwest;
 mod model;
 mod service;
 mod rest;
-// mod app;
+
+#[cfg(test)]
+mod tests;
 
 
 #[actix_web::main]

@@ -5,7 +5,7 @@
 use std::borrow::Cow;
 use std::ops::Add;
 
-use chrono::{ NaiveDate, NaiveDateTime, Local, Duration, Datelike };
+use chrono::{ NaiveDate, Local, Duration };
 use futures::future::{ ok, err };
 use futures::FutureExt;
 
@@ -17,7 +17,7 @@ use crate::service::configuration::{
 
 
 const BASE_URL: &str = "http://api.openweathermap.org/data/2.5/forecast/daily?units=imperial";
-const MAX_FORECAST_DAYS: i64 = 16;
+pub const MAX_FORECAST_DAYS: i64 = 16;
 const WEEK_DAYS: u8 = 5;
 
 #[derive(Debug)]
@@ -53,10 +53,16 @@ impl<'w> UrlBuilder<'w> {
                 } else if target_day < today {
                     Err( RemoteError::SmallestDay )
                 } else {
-                    let date = unix_time( target_day );
-
-                    let url = format!("{}&q={}&date={}&cnt={}&appid={}", BASE_URL, city, date, count_day, self.web_service.api_key());
-                    Ok( Cow::Owned( url ) )
+                    if count_day == WEEK_DAYS {
+                        let date = unix_time( today );
+                        let url = format!("{}&q={}&date={}&cnt={}&appid={}", BASE_URL, city, date, count_day, self.web_service.api_key());
+                        Ok( Cow::Owned( url ) )
+                    } else {
+                        let date = unix_time( target_day );
+                        let count_day = 1;
+                        let url = format!("{}&q={}&date={}&cnt={}&appid={}", BASE_URL, city, date, count_day, self.web_service.api_key());
+                        Ok( Cow::Owned( url ) )
+                    }
                 }
             },
             None => Err( RemoteError::EmptyCity ),

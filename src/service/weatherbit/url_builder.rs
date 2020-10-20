@@ -5,11 +5,11 @@
 use std::borrow::Cow;
 use std::ops::Add;
 
-use chrono::{ NaiveDate, NaiveDateTime, Local, Duration, Datelike };
+use chrono::{ NaiveDate, Local, Duration };
 use futures::future::{ ok, err };
 use futures::FutureExt;
 
-use crate::service::remote_access::{ RemoteError, WeatherFuture, unix_time };
+use crate::service::remote_access::{ RemoteError, WeatherFuture };
 use crate::service::configuration::{
     Configuration,
     WeatherBit
@@ -17,7 +17,7 @@ use crate::service::configuration::{
 
 //https://api.weatherbit.io/v2.0/forecast/daily?city=Raleigh,NC&key=API_KEY
 const BASE_URL: &str = "https://api.weatherbit.io/v2.0/forecast/daily?units=I";
-const MAX_FORECAST_DAYS: i64 = 16;
+pub const MAX_FORECAST_DAYS: i64 = 16;
 const WEEK_DAYS: u8 = 5;
 
 #[derive(Debug)]

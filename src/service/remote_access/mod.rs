@@ -6,15 +6,13 @@ mod getter_weather;
 mod error;
 
 pub use weather_access::RemoteAccess;
-pub use error::{ BadStatus, RemoteError, MeasureError };
+pub use error::{ RemoteError, MeasureError };
 pub use getter_weather::GetterWeather;
 
 use serde_json::Value;
-use reqwest::{ self, Error as ReqwestError };
+use reqwest;
 use chrono::{ NaiveDate, Datelike };
 use futures::future::{ BoxFuture, FutureExt, ok, err };
-use std::error::Error;
-use std::time::Duration;
 use std::borrow::Cow;
 
 
